@@ -1,8 +1,8 @@
 import os
 import torch
 import click
-from typing import Callable, cast
-from vllm.platforms import current_platform
+from typing import Callable, cast, NamedTuple
+#from vllm.platforms import current_platform
 
 from . import _C
 from . import ops
@@ -57,7 +57,27 @@ QGEMM_HADAMARD_TYPE = Callable[
 
 # we use this instead of `torch.cuda.get_device_capability()` so that
 # it works better with multiprocessing (which vLLM uses)
-TORCH_CURRENT_DEVICE_CC = current_platform.get_device_capability()
+#TORCH_CURRENT_DEVICE_CC = current_platform.get_device_capability()
+class DeviceCapability(NamedTuple):
+    major: int
+    minor: int
+
+    def as_version_str(self) -> str:
+        return f"{self.major}.{self.minor}"
+
+    def to_int(self) -> int:
+        """
+        Express device capability as an integer ``<major><minor>``.
+
+        It is assumed that the minor version is always a single digit.
+        """
+        assert 0 <= self.minor < 10
+        return self.major * 10 + self.minor
+        
+def get_device_capability(device_id: int = 0) -> DeviceCapability:
+    major, minor = torch.cuda.get_device_capability(device_id)
+    return DeviceCapability(major=major, minor=minor)
+TORCH_CURRENT_DEVICE_CC = get_device_capability()
 
 if TORCH_CURRENT_DEVICE_CC == (8, 6):
     click.secho(f"[FLUTE]: Using A6000 with CC={TORCH_CURRENT_DEVICE_CC}", fg="green")

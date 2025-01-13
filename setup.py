@@ -10,6 +10,7 @@ import subprocess
 from typing import List
 from setuptools import find_packages, setup
 from packaging.version import Version, parse
+import torch
 from torch.utils.cpp_extension import (
     CUDA_HOME,
     CUDAExtension,
@@ -66,8 +67,8 @@ def get_version() -> str:
     version = find_version(get_path(LIBRARY_NAME, "__init__.py"))
     cuda_version = str(get_nvcc_cuda_version())
     cuda_version_str = cuda_version.replace(".", "")[:3]
-    torch_version = os.environ.get("TORCH_VERSION")
-    torch_version_str = torch_version.replace(".", "")
+    torch_version_raw = parse(torch.__version__)
+    torch_version_str = f"{torch_version_raw.major}.{torch_version_raw.minor}"
     version += f"+cu{cuda_version_str}torch{torch_version_str}"        
 
     return version

@@ -15,7 +15,7 @@ jobs:
       matrix:
           os: ['ubuntu-20.04']
           python-version: ['3.8', '3.9', '3.10', '3.11']
-          pytorch-version: ['2.4.0']
+          pytorch-version: ['2.4.0', '2.5.1']
           cuda-version: ['11.8', '12.1']
 
     steps:
@@ -44,7 +44,7 @@ jobs:
       - name: Install PyTorch ${{ matrix.pytorch-version }} with CUDA ${{ matrix.cuda-version }}
         run: |
           bash -x .github/workflows/scripts/pytorch-install.sh ${{ matrix.python-version }} ${{ matrix.pytorch-version }} ${{ matrix.cuda-version }}
-
+          export TORCH_VERSION=${{ matrix.pytorch-version }}
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 

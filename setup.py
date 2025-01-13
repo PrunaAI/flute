@@ -66,7 +66,8 @@ def get_version() -> str:
     version = find_version(get_path(LIBRARY_NAME, "__init__.py"))
     cuda_version = str(get_nvcc_cuda_version())
     cuda_version_str = cuda_version.replace(".", "")[:3]
-    torch_version_str = TORCH_VERSION.replace(".", "")
+    torch_version = os.environ.get("TORCH_VERSION")
+    torch_version_str = torch_version.replace(".", "")
     version += f"+cu{cuda_version_str}torch{torch_version_str}"        
 
     return version

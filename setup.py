@@ -79,7 +79,14 @@ def get_extensions() -> List:
     extra_link_args = []
     extra_compile_args = {
         "cxx": ["-std=c++17"],
-        "nvcc": ["-std=c++17"],
+        "nvcc": [
+        '-gencode=arch=compute_80,code=sm_80',
+        '-gencode=arch=compute_86,code=sm_86',
+        '-gencode=arch=compute_89,code=sm_89',
+        '-gencode=arch=compute_90,code=sm_90',
+        '-gencode=arch=compute_90,code=compute_90',  # PTX for future compatibility
+        "-std=c++17"
+        ],
     }
     include_dirs = [
         os.path.join(CUTLASS_PATH, "include"),

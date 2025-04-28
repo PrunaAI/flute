@@ -27,9 +27,9 @@ $python_executable -m build --no-isolation
 # https://pypi.org/project/cuda-ext-example/
 auditwheel show dist/*.whl
 
-auditwheel repair \
-    dist/*.whl \
-    --plat manylinux_2_34_x86_64 \
-    --exclude libc10.so \
-    --exclude libc10_cuda.so \
-    --exclude libtorch_cpu.so
+#auditwheel repair \
+#    dist/*.whl \
+#    --plat manylinux_2_34_x86_64 \
+#    --exclude libc10.so \
+#    --exclude libc10_cuda.so \
+#    --exclude libtorch_cpu.so

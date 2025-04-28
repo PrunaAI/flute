@@ -16,7 +16,7 @@ jobs:
           os: ['ubuntu-22.04']
           python-version: ['3.9', '3.10', '3.11', '3.12']
           pytorch-version: ['2.7.0']
-          cuda-version: ['12.1', '12.4']
+          cuda-version: ['12.6']
 
     steps:
       - name: Checkout

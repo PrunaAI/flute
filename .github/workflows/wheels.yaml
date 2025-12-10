@@ -15,8 +15,11 @@ jobs:
       matrix:
           os: ['ubuntu-22.04']
           python-version: ['3.9', '3.10', '3.11', '3.12']
-          pytorch-version: ['2.7.0']
-          cuda-version: ['12.6']
+          pytorch-version: ['2.7.0', '2.8.0', '2.9.0']
+          cuda-version: ['12.6', '12.8']
+          exclude:
+            - pytorch-version: '2.9.0'  # no torch 2.9 wheel on python 3.9
+              python-version: '3.9'
 
     steps:
       - name: Checkout
@@ -39,9 +42,26 @@ jobs:
         with:
             python-version: ${{ matrix.python-version }}
 
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
+
       - name: Install CUDA ${{ matrix.cuda-version }}
         run: |
           bash -x .github/workflows/scripts/cuda-install.sh ${{ matrix.cuda-version }} ${{ matrix.os }}
+
+      - name: Clean APT cache
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
 
       - name: Install PyTorch ${{ matrix.pytorch-version }} with CUDA ${{ matrix.cuda-version }}
         run: |
@@ -60,3 +80,25 @@ jobs:
         with:
           name: wheels-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.pytorch-version }}-${{ matrix.cuda-version }}
           path: ./dist/*.whl  # ./wheelhouse/*.whl
+
+
+  consolidate-wheels:
+    needs: [wheel]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Consolidate wheels into a single folder
+        run: |
+          mkdir -p consolidated_wheels
+          find dist -name '*.whl' -exec cp {} consolidated_wheels/ \;
+          ls -l consolidated_wheels
+
+      - name: Upload consolidated wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-wheels
+          path: consolidated_wheels

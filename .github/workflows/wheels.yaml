@@ -15,7 +15,7 @@ jobs:
       matrix:
           os: ['ubuntu-22.04']
           python-version: ['3.10', '3.11', '3.12']
-          pytorch-version: ['2.7.0', '2.8.0', '2.9.0', '2.10.0']
+          pytorch-version: ['2.10.0']
           cuda-version: ['12.6', '12.8']
           exclude:
             - pytorch-version: '2.9.0'  # no torch 2.9 wheel on python 3.9

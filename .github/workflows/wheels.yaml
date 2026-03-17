@@ -13,13 +13,16 @@ jobs:
 
     strategy:
       matrix:
-          os: ['ubuntu-22.04']
-          python-version: ['3.10', '3.11', '3.12']
-          pytorch-version: ['2.10.0']
-          cuda-version: ['12.6']
-          exclude:
-            - pytorch-version: '2.9.0'  # no torch 2.9 wheel on python 3.9
-              python-version: '3.9'
+        os: ['ubuntu-22.04']
+        # python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.13', '3.14']
+        pytorch-version: ['2.7.0', '2.8.0', '2.9.0', '2.10.0']
+        cuda-version: ['12.6']
+        exclude:
+          - pytorch-version: '2.7.0'
+            python-version: '3.14'
+          - pytorch-version: '2.8.0'
+            python-version: '3.14'
 
     steps:
       - name: Checkout

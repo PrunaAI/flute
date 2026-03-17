@@ -32,4 +32,5 @@ auditwheel repair \
     --plat manylinux_2_34_x86_64 \
     --exclude libc10.so \
     --exclude libc10_cuda.so \
+    --exclude libtorch.so \
     --exclude libtorch_cpu.so

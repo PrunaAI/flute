@@ -112,6 +112,14 @@ def get_extensions() -> List:
     return ext_modules
 
 
+def _torch_minor_line_requirement() -> str:
+    """Pin torch to the same minor release line as the build (wheel must match ABI)."""
+    v = parse(torch.__version__)
+    lower = f"{v.major}.{v.minor}.{v.micro}"
+    upper = f"{v.major}.{v.minor + 1}.0"
+    return f"torch>={lower},<{upper}"
+
+
 def get_requirements() -> List[str]:
     """Get Python package dependencies from requirements.txt."""
 
@@ -126,7 +134,13 @@ def get_requirements() -> List[str]:
                 resolved_requirements.append(line)
         return resolved_requirements
 
-    return _read_requirements("requirements.txt")
+    def _is_torch_line(line: str) -> bool:
+        head = line.split("#", 1)[0].strip()
+        return head.lower().startswith("torch")
+
+    reqs = [r for r in _read_requirements("requirements.txt") if not _is_torch_line(r)]
+    reqs.append(_torch_minor_line_requirement())
+    return reqs
 
 
 setup(

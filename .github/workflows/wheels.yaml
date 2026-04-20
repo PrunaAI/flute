@@ -72,6 +72,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
+      # Wheel metadata: setup.py adds torch>=X.Y.Z,<X.(Y+1).0 from the installed PyTorch (matrix.pytorch-version).
       - name: Build wheel
         shell: bash
         run: |

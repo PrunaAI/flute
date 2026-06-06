@@ -14,14 +14,14 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-22.04']
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        pytorch-version: ['2.7.0', '2.8.0', '2.9.0', '2.10.0', '2.11.0']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+        pytorch-version: ['2.7.0', '2.8.0', '2.9.0', '2.10.0', '2.11.0', '2.12.0']
         cuda-version: ['12.6']
-        exclude:
-          - pytorch-version: '2.7.0'
-            python-version: '3.14'
-          - pytorch-version: '2.8.0'
-            python-version: '3.14'
+        # exclude:
+        #   - pytorch-version: '2.7.0'
+        #     python-version: '3.14'
+        #   - pytorch-version: '2.8.0'
+        #     python-version: '3.14'
 
     steps:
       - name: Checkout
@@ -72,6 +72,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
+      # Wheel metadata: setup.py adds torch>=X.Y.Z,<X.(Y+1).0 from the installed PyTorch (matrix.pytorch-version).
       - name: Build wheel
         shell: bash
         run: |
